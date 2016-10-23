@@ -1,6 +1,7 @@
 import todoist
 from base import dlog
 import elo
+import os
 import argparse
 import sys
 from datetime import datetime
@@ -140,7 +141,7 @@ def check_positive_int(val):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', help="config file path")
-    parser.set_defaults(config="config.yaml")
+    parser.set_defaults(config=os.path.expanduser("~") + "/.taski.yaml")
     subparsers = parser.add_subparsers(help='available commands')
 
     plan_parser = subparsers.add_parser('plan', help='plan tasks')
