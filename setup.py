@@ -2,12 +2,12 @@ from distutils.core import setup
 
 setup(
     name="taski",
-    version="0.1.1",
+    version="0.1.2",
     author="Jiale Zhi",
     author_email="vipcalio@gmail.com",
     packages=["app"],
     include_package_data=True,
-    url="http://pypi.python.org/pypi/taski_v011/",
+    url="https://github.com/calio/taski",
     license='MIT',
     description="Taski is a tool to help manage your GTD tasks",
     long_description=open("README.txt").read(),
