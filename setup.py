@@ -1,17 +1,17 @@
 from distutils.core import setup
 
 setup(
-    name="tasky",
-    version="0.1.0",
+    name="taski",
+    version="0.1.1",
     author="Jiale Zhi",
     author_email="vipcalio@gmail.com",
     packages=["app"],
     include_package_data=True,
-    url="http://pypi.python.org/pypi/tasky_v010/",
+    url="http://pypi.python.org/pypi/taski_v011/",
     license='MIT',
-    description="Tasky is a tool to help manage your GTD tasks",
+    description="Taski is a tool to help manage your GTD tasks",
     long_description=open("README.txt").read(),
-    scripts=['tasky'],
+    scripts=['taski'],
     install_requires=[
         "pytodoist",
         "pytz",
