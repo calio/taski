@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name="taski",
-    version="0.1.2",
+    version="0.1.3",
     author="Jiale Zhi",
     author_email="vipcalio@gmail.com",
     packages=["app"],
