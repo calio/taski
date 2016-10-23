@@ -15,7 +15,7 @@ def get_config(args):
     fs.close()
     return cfg
 
-def get_app():
+def get_app(cfg):
 
     app = todoist.Todoist()
     app.init(cfg)
@@ -157,5 +157,5 @@ def main():
 
     args = parser.parse_args()
     cfg = get_config(args)
-    app = get_app()
+    app = get_app(cfg)
     args.func(app, args, cfg)
