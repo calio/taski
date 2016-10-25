@@ -101,6 +101,8 @@ class Todoist():
         if hasattr(tt, "completed_date"):
             t.ts_done = datetime.strptime(tt.completed_date, "%a %d %b %Y %H:%M:%S +0000")
             t.done = True
+        else:
+            t.ts_added = datetime.strptime(tt.date_added, "%a %d %b %Y %H:%M:%S +0000")
 
         return t
 
@@ -126,6 +128,13 @@ class Todoist():
         else:
             dlog("ttasks cache HIT")
         return ttasks
+
+    def get_tasks(self):
+        ttasks = self.get_ttasks()
+        tasks = []
+        for tt in ttasks:
+            tasks.append(self.PyTaskAdapter(tt))
+        return tasks
 
     def get_projects(self):
         ttasks = self.get_ttasks()

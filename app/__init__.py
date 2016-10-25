@@ -23,6 +23,16 @@ def get_app(cfg):
 
     return app
 
+def show_old_tasks(app, args, cfg):
+    tasks = app.get_tasks()
+    tasks = sorted(tasks, key=lambda x: x.ts_added)
+    now = datetime.now()
+    for t in tasks:
+        delta = (now - t.ts_added).days
+        if delta > 180:
+            print delta, "days\t", t
+
+
 def show(app, args, cfg):
     if args.show_cmd == "api_token":
         print app.user.api_token
@@ -30,6 +40,9 @@ def show(app, args, cfg):
         print app.get_stats()
     elif args.show_cmd == "config":
         print yaml.dump(cfg)
+    elif args.show_cmd == "old_tasks":
+        show_old_tasks(app, args, cfg)
+
 
 def rank(app, args, cfg):
     projects = app.get_projects()
@@ -153,7 +166,8 @@ def main():
     rank_parser.set_defaults(func=rank)
 
     show_parser = subparsers.add_parser('show', help='show things')
-    show_parser.add_argument('show_cmd', help='show [api_token|stats]')
+    show_parser.add_argument('show_cmd', help='show things',
+            choices=["api_token", "stats", "config", "old_tasks"])
     show_parser.set_defaults(func=show)
 
     args = parser.parse_args()

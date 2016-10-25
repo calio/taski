@@ -5,6 +5,7 @@ class Task():
         self.pid = 0
         self.done = False
         self.ts_done = -1
+        self.ts_added = -1
         self.meta_data = None
 
     def __repr__(self):
