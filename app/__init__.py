@@ -114,7 +114,7 @@ def plan(app, args, cfg):
     project_blacklist = cfg["plan_skip_projects"]
     for p in projects[:]:
         if p.name in project_blacklist:
-            print("discard project:", p.name)
+            print("skip project when planning:", p.name)
             projects.remove(p)
     planner = PriorityPlanner(cfg, preprocess=adjust_for_completed_tasks)
 
