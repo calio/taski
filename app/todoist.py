@@ -325,6 +325,40 @@ class Todoist():
         for p in projects:
             self.update_project(p)
 
+    def get_completed_tasks2(self, since=None, until=None):
+        key = "completed_tasks2" + str(since) + str(until)
+        tasks = self.fc.get(key)
+        if tasks is not None:
+            dlog("completed tasks HIT")
+            return tasks
+        else:
+            dlog("completed tasks2 MISS")
+
+	self.user.sync()
+
+        tasks = []
+        offset = 0
+        while True:
+            response = todoist.API.get_all_completed_tasks(self.user.api_token,
+                    limit=todoist._PAGE_LIMIT,
+                    offset=offset,
+                    since=since,
+                    until=until)
+            todoist._fail_if_contains_errors(response)
+            response_json = response.json()
+            tasks_json = response_json['items']
+            if len(tasks_json) == 0:
+                break
+	    for task_json in tasks_json:
+		#print(task_json)
+		project = self.user.projects.get(task_json['project_id'], None)
+		if project:
+		    tasks.append(self.PyTaskAdapter(todoist.Task(task_json, project)))
+	    offset += todoist._PAGE_LIMIT
+
+	self.fc.set(key, tasks)
+	return tasks
+
     def get_completed_tasks(self):
         res = []
         tasks = self.fc.get("completed_tasks")

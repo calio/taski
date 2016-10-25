@@ -32,6 +32,12 @@ def show_old_tasks(app, args, cfg):
         if delta > 180:
             print delta, "days\t", t
 
+def show_completed_tasks(app, args, cfg):
+    tasks = app.get_completed_tasks2(since=args.since, until=args.until)
+    tasks = sorted(tasks, key=lambda x: x.ts_done)
+    for t in tasks:
+        print t.ts_done, t
+
 
 def show(app, args, cfg):
     if args.show_cmd == "api_token":
@@ -42,6 +48,8 @@ def show(app, args, cfg):
         print yaml.dump(cfg)
     elif args.show_cmd == "old_tasks":
         show_old_tasks(app, args, cfg)
+    elif args.show_cmd == "completed_tasks":
+        show_completed_tasks(app, args, cfg)
 
 
 def rank(app, args, cfg):
@@ -167,7 +175,11 @@ def main():
 
     show_parser = subparsers.add_parser('show', help='show things')
     show_parser.add_argument('show_cmd', help='show things',
-            choices=["api_token", "stats", "config", "old_tasks"])
+            choices=["api_token", "stats", "config", "old_tasks", "completed_tasks"])
+    show_parser.add_argument('--since', help='show completed task since this date. Format "2007-4-29T10:13"')
+    show_parser.add_argument('--until', help='show completed task until this date. Format "2007-4-29T10:13"')
+    show_parser.set_defaults(since=None)
+    show_parser.set_defaults(until=None)
     show_parser.set_defaults(func=show)
 
     args = parser.parse_args()
