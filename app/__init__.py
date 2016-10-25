@@ -10,6 +10,8 @@ import time
 import yaml
 
 
+VERSION="0.1.4"
+
 def get_config(args):
     fs = open(args.config)
     cfg = yaml.load(fs)
@@ -182,7 +184,14 @@ def main():
     show_parser.set_defaults(until=None)
     show_parser.set_defaults(func=show)
 
+    version_parser = subparsers.add_parser('version', help='print version number')
+    version_parser.set_defaults(quick_func=lambda args,cfg: sys.stdout.write(VERSION))
+
     args = parser.parse_args()
     cfg = get_config(args)
-    app = get_app(cfg)
-    args.func(app, args, cfg)
+
+    if hasattr(args, "quick_func"):
+        args.quick_func(args, cfg)
+    if hasattr(args, "func"):
+        app = get_app(cfg)
+        args.func(app, args, cfg)
