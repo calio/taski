@@ -163,16 +163,16 @@ def check_positive_int(val):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', help="config file path")
+    parser.add_argument('-c', '--config', help="config file path")
     parser.set_defaults(config=os.path.expanduser("~") + "/.taski.yaml")
     subparsers = parser.add_subparsers(help='available commands')
 
     plan_parser = subparsers.add_parser('plan', help='plan tasks')
-    plan_parser.add_argument('--limit', type=check_positive_int, default=30)
+    plan_parser.add_argument('-l', '--limit', type=check_positive_int, default=30)
     plan_parser.set_defaults(func=plan)
 
     rank_parser = subparsers.add_parser('rank', help='rank tasks')
-    rank_parser.add_argument('--project')
+    rank_parser.add_argument('-p', '--project')
     rank_parser.set_defaults(func=rank)
 
     show_parser = subparsers.add_parser('show', help='show things')
