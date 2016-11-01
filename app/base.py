@@ -22,4 +22,7 @@ class Project():
         return "[Project](" + self.name.encode('utf-8') + ")"
 
 def dlog(msg):
-    print(msg.encode('utf-8'))
+    try:
+        print(msg)
+    except UnicodeDecodeError:
+        print(msg.encode('utf-8'))
