@@ -10,7 +10,7 @@ import time
 import yaml
 
 
-VERSION="0.1.5"
+VERSION="0.1.6"
 
 def get_config(args):
     fs = open(args.config)
