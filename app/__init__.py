@@ -185,13 +185,15 @@ def main():
     show_parser.set_defaults(func=show)
 
     version_parser = subparsers.add_parser('version', help='print version number')
-    version_parser.set_defaults(quick_func=lambda args,cfg: sys.stdout.write(VERSION))
+    version_parser.set_defaults(quick_func=lambda args: sys.stdout.write(VERSION + "\n"))
 
     args = parser.parse_args()
-    cfg = get_config(args)
 
     if hasattr(args, "quick_func"):
-        args.quick_func(args, cfg)
+        args.quick_func(args)
+
+    cfg = get_config(args)
+
     if hasattr(args, "func"):
         app = get_app(cfg)
         args.func(app, args, cfg)
