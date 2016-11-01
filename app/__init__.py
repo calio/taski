@@ -192,8 +192,8 @@ def main():
     if hasattr(args, "quick_func"):
         args.quick_func(args)
 
-    cfg = get_config(args)
 
     if hasattr(args, "func"):
+        cfg = get_config(args)
         app = get_app(cfg)
         args.func(app, args, cfg)
