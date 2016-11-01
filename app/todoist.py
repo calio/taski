@@ -67,8 +67,11 @@ class FileCache(object):
             return False
         return True
 
-    def clear(self):
-        cache_files = glob.glob("/tmp/*.data")
+    def clear(self, key=None):
+        if key:
+            cache_files = ["/tmp/" + key + ".data"]
+        else:
+            cache_files = glob.glob("/tmp/*.data")
         for f in cache_files:
             dlog("unlink: " + f)
             os.unlink(f)
@@ -248,6 +251,7 @@ class Todoist():
             #time.sleep(0.5)
 
     def update_task(self, task, key, value, set_attr=True):
+        #dlog("update_task %s, %s->%s" % (task, key, value))
 
         if TO_UPDATE.has_key(task.id):
             info = TO_UPDATE[task.id]
@@ -286,9 +290,10 @@ class Todoist():
         #print("text:", response.text)
 
 
-    def update(self):
-        self.clean_up()
-
+    def update(self, cleanup=False):
+        if cleanup:
+            self.clean_up()
+        #dlog("TO_UPDATE: %s" % TO_UPDATE)
         updates = []
         for id, info in TO_UPDATE.iteritems():
             t = info["object"]
@@ -304,6 +309,9 @@ class Todoist():
         TO_UPDATE.clear()
 
         self.execute_commands(updates)
+        # invalid cache
+        if len(updates) != 0:
+            self.fc.clear(key="ttasks")
 
 
     def update_project(self, project):
@@ -395,10 +403,14 @@ class Todoist():
         #print("mark as planned", task)
         tt = task._data
         if len(tt.labels) == 0:
+            #print("#lables = 0")
             #tt.labels = [self.planned_label_id]
             self.update_task(tt, "labels", [self.planned_label_id], set_attr=False)
         else:
+            #print("#lables != 0")
+            #print(self.planned_label_id, type(self.planned_label_id), tt.labels[0], type(tt.labels[0])  )
             if self.planned_label_id not in tt.labels:
+                #print("@planned not in tt.labels")
                 #tt.labels = tt.labels[:]
                 #tt.labels.append(self.planned_label_id)
                 labels = tt.labels[:]

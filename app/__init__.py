@@ -152,7 +152,7 @@ def plan(app, args, cfg):
     print(res)
     #planner.run(projects)
     schedule(app, res, offset=offset)
-    app.update()
+    app.update(cleanup=True)
 
 
 def check_positive_int(val):

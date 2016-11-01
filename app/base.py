@@ -1,3 +1,5 @@
+#import traceback
+
 class Task():
     def __init__(self):
         self.id = 0
@@ -23,6 +25,7 @@ class Project():
 
 def dlog(msg):
     try:
+        #traceback.print_stack()
         print(msg)
     except UnicodeDecodeError:
         print(msg.encode('utf-8'))
