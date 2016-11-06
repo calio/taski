@@ -24,6 +24,10 @@ class FileCache(object):
     """
     def __init__(self):
         self.ttl = 3600 # seconds
+        self.prefix = "/tmp/"
+
+    def cache_name(self, key):
+        return self.prefix + key + ".data"
 
     def get(self, key):
         """
@@ -32,7 +36,7 @@ class FileCache(object):
         """
         try:
             key = key.replace("/", "_")
-            fname = "/tmp/" + key + ".data"
+            fname = self.cache_name(key)
             ctime = os.stat(fname).st_ctime
             #print("st_ctime: ", t)
             now = time.time()
@@ -58,7 +62,7 @@ class FileCache(object):
         """
         try:
             key = key.replace("/", "_")
-            fname = "/tmp/" + key + ".data"
+            fname = self.cache_name(key)
             f = open(fname, "wb")
             pickle.dump(value, f)
             f.close()
@@ -69,9 +73,9 @@ class FileCache(object):
 
     def clear(self, key=None):
         if key:
-            cache_files = ["/tmp/" + key + ".data"]
+            cache_files = [self.cache_name(key)]
         else:
-            cache_files = glob.glob("/tmp/*.data")
+            cache_files = glob.glob(self.prefix + "*.data")
         for f in cache_files:
             dlog("unlink: " + f)
             os.unlink(f)
