@@ -16,6 +16,7 @@ def get_config(args):
     fs = open(args.config)
     cfg = yaml.load(fs)
     fs.close()
+    # TODO validate config
     return cfg
 
 def get_app(cfg):

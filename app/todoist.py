@@ -22,9 +22,17 @@ class FileCache(object):
     FileCache General file cache backed by pickle. Cache files are located under
     "/tmp/[name].data".
     """
-    def __init__(self):
+    def __init__(self, prefix="/tmp/"):
         self.ttl = 3600 # seconds
-        self.prefix = "/tmp/"
+        if len(prefix) == 0:
+            dlog("prefix length is 0")
+            prefix = "/tmp/"
+        if prefix[-1] != '/':
+            prefix += '/'
+
+        if not os.path.exists(prefix):
+            os.makedirs(prefix)
+        self.prefix = prefix
 
     def cache_name(self, key):
         return self.prefix + key + ".data"
@@ -90,7 +98,7 @@ class Todoist():
         self.already_planned = []
 
     def init(self, cfg):
-        self.fc = FileCache()
+        self.fc = FileCache(prefix="/tmp/" + cfg["email"])
         self.user = todoist.login(cfg["email"], cfg["password"])
         self.planned_label = self.user.get_label("planned")
         if not self.planned_label:
