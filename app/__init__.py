@@ -18,6 +18,12 @@ def get_config(args):
     cfg = yaml.load(fs)
     fs.close()
     # TODO validate config
+    # keys in config file:
+    # email:
+    # password:
+    # plan_skip_projects:
+    # rank_skip_projects:
+    # timezone:  # https://pypi.python.org/pypi/tzlocal
     return cfg
 
 def get_app(cfg):
