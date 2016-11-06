@@ -27,8 +27,13 @@ def lose(ra, rb):
 
 def match(player1, player2):
     while True:
-        r = input("Which one wins? (0: draw, 1: 1 wins, 2: 2 wins)\n1. %s\n2. %s\n[0/1/2]:" % (player1, player2))
-        r = int(r)
+        try:
+            r = input("Which one wins? (0: draw, 1: 1 wins, 2: 2 wins)\n1. %s\n2. %s\n[0/1/2]:" % (player1, player2))
+            r = int(r)
+        except (SyntaxError, NameError) as e:
+            print(e)
+            continue
+
         if r == 0:
             player1["score"] = draw(player1["score"], player2["score"])
             player2["score"] = draw(player2["score"], player1["score"])

@@ -14,7 +14,12 @@ import yaml
 VERSION="0.1.9"
 
 def get_config(args):
-    fs = open(args.config)
+    try:
+        fs = open(args.config)
+    except IOError as e:
+        print("Can't open config file: %s\n" % args.config)
+        raise e
+
     cfg = yaml.load(fs)
     fs.close()
     # TODO validate config
