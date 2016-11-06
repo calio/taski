@@ -397,7 +397,7 @@ class Todoist():
 
         return res
 
-    def num_tasks_completed_today(self):
+    def num_tasks_completed_today(self, timezone):
         now = datetime.utcnow()
         n = 0
 
@@ -406,7 +406,7 @@ class Todoist():
 
         for item in self.completed_tasks:
             #print(item)
-            if same_date(now, item.ts_done):
+            if same_date(now, item.ts_done, timezone):
                 n = n + 1
 
         return n

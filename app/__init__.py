@@ -1,3 +1,4 @@
+#coding: utf-8
 import todoist
 from base import dlog
 import elo
@@ -93,7 +94,7 @@ def schedule(app, res, offset=0):
         tasks and start to plan the n+1 task.
     """
     tasks_per_day = 10
-    if offset > 10:
+    if offset >= 10:
         print("offset too large: ", offset)
         offset = 7 # 10 - 7 = 3, plan 3 tasks for today if we've already done more than 10 today
 
@@ -149,7 +150,9 @@ def plan(app, args, cfg):
         n += 1
         if n >= args.limit:
             break
-    offset = app.num_tasks_completed_today()
+    offset = app.num_tasks_completed_today(cfg["timezone"])
+    dlog("offset %d"
+            % offset)
     print(res)
     #planner.run(projects)
     schedule(app, res, offset=offset)
@@ -161,6 +164,10 @@ def check_positive_int(val):
     if ival <= 0:
         raise argparse.ArgumentTypeError("%s is not a positive integer" % val)
     return ival
+
+def test(app, args, cfg):
+    offset = app.num_tasks_completed_today(cfg["timezone"])
+    print(offset)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -187,6 +194,9 @@ def main():
 
     version_parser = subparsers.add_parser('version', help='print version number')
     version_parser.set_defaults(quick_func=lambda args: sys.stdout.write(VERSION + "\n"))
+
+    test_parser = subparsers.add_parser('test', help=u"¯\_(ツ)_/¯")
+    test_parser.set_defaults(func=test)
 
     args = parser.parse_args()
 
