@@ -380,7 +380,12 @@ class Todoist():
 	return tasks
 
     def get_completed_tasks(self):
+        # This is a premium only feature
         res = []
+        if not self.user.is_premium:
+            self.completed_tasks = res
+            return res
+
         tasks = self.fc.get("completed_tasks")
         if tasks is None:
             dlog("completed tasks MISS")

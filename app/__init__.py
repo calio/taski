@@ -99,15 +99,14 @@ def choose_func(planner_item):
     else:
         return None
 
-def schedule(app, res, offset=0):
+def schedule(app, res, offset=0, tasks_per_day=10):
     """ offset is the position that we should start plan for today's taks. That
         means if today we've finished n tasks, we skip the first n finished
         tasks and start to plan the n+1 task.
     """
-    tasks_per_day = 10
-    if offset >= 10:
+    if offset >= tasks_per_day:
         print("offset too large: ", offset)
-        offset = 7 # 10 - 7 = 3, plan 3 tasks for today if we've already done more than 10 today
+        offset = tasks_per_day # Good job! Award him/her with more tasks!
 
     j = offset
     #print("offset is %d" % offset)
@@ -118,7 +117,9 @@ def schedule(app, res, offset=0):
         #tp.schedule_for(t.id, j)
         day = seq / tasks_per_day
         minute = seq % tasks_per_day
-        app.update_task(task, "date_string", "{day} days at 22:{minute:02}".format(day=day, minute=minute))
+        app.update_task(task, "date_string",
+                        "{day} days at 22:{minute:02}".format(
+                            day=day, minute=minute))
         #t: Pytodoist Task
         app.mark_as_planned(task)
         j += 1
@@ -152,6 +153,7 @@ def plan(app, args, cfg):
         if p.name in project_blacklist:
             print("skip project when planning:", p.name)
             projects.remove(p)
+
     planner = PriorityPlanner(cfg, preprocess=adjust_for_completed_tasks)
 
     n = 0
@@ -162,11 +164,10 @@ def plan(app, args, cfg):
         if n >= args.limit:
             break
     offset = app.num_tasks_completed_today(cfg["timezone"])
-    dlog("offset %d"
-            % offset)
+    dlog("offset %d" % offset)
     print(res)
     #planner.run(projects)
-    schedule(app, res, offset=offset)
+    schedule(app, res, offset=offset, tasks_per_day=args.daily_goal)
     app.update(cleanup=True)
 
 
@@ -177,8 +178,9 @@ def check_positive_int(val):
     return ival
 
 def test(app, args, cfg):
-    offset = app.num_tasks_completed_today(cfg["timezone"])
-    print(offset)
+    print(args)
+    #offset = app.num_tasks_completed_today(cfg["timezone"])
+    print(app.user.is_premium)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -187,7 +189,12 @@ def main():
     subparsers = parser.add_subparsers(help='available commands')
 
     plan_parser = subparsers.add_parser('plan', help='plan tasks')
-    plan_parser.add_argument('-l', '--limit', type=check_positive_int, default=30)
+    plan_parser.add_argument('-l', '--limit',
+                             help='limit number of tasks to plan',
+                             type=check_positive_int, default=30)
+    plan_parser.add_argument('-n', '--daily-goal',
+                             help='number of tasks scheduled per day',
+                             type=check_positive_int, default=10)
     plan_parser.set_defaults(func=plan)
 
     rank_parser = subparsers.add_parser('rank', help='rank tasks')
