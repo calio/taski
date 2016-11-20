@@ -177,6 +177,9 @@ def check_positive_int(val):
         raise argparse.ArgumentTypeError("%s is not a positive integer" % val)
     return ival
 
+def str2unicode(val):
+    return unicode(val, sys.getfilesystemencoding())
+
 def test(app, args, cfg):
     print(args)
     #offset = app.num_tasks_completed_today(cfg["timezone"])
@@ -198,7 +201,8 @@ def main():
     plan_parser.set_defaults(func=plan)
 
     rank_parser = subparsers.add_parser('rank', help='rank tasks')
-    rank_parser.add_argument('-p', '--project')
+    rank_parser.add_argument('-p', '--project', help='project name',
+                             type=str2unicode)
     rank_parser.set_defaults(func=rank)
 
     show_parser = subparsers.add_parser('show', help='show things')
