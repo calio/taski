@@ -443,3 +443,6 @@ class Todoist():
     def get_stats(self):
         ttasks = self.get_ttasks()
         return "Total number of tasks: %d" % len(ttasks)
+
+def get_app():
+    return Todoist()

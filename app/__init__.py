@@ -1,5 +1,5 @@
 #coding: utf-8
-import todoist
+import pytodoist_wrapper as wrapper
 from base import dlog
 import elo
 import os
@@ -33,7 +33,7 @@ def get_config(args):
 
 def get_app(cfg):
 
-    app = todoist.Todoist()
+    app = wrapper.get_app()
     app.init(cfg)
 
     return app
