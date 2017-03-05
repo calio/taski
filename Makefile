@@ -4,6 +4,9 @@ release:
 	python setup.py sdist upload
 
 test:
-	@pytest
+	@pytest tests/test_base.py
 
-.PHONY: release test
+test_account:
+	python create_test_account.py
+
+.PHONY: release test test_account

@@ -10,8 +10,8 @@ import math
 import re
 from datetime import datetime
 from pytodoist import todoist
-from base import dlog, Project, Task
-from util import same_date
+from base import Project, Task
+from util import same_date, dlog
 
 
 TO_UPDATE = {}

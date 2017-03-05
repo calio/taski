@@ -2,3 +2,5 @@
 MANIFEST
 build/
 dist/
+test_account.yaml
+.cache

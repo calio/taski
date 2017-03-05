@@ -1,6 +1,6 @@
 #coding: utf-8
 import pytodoist_wrapper as wrapper
-from base import dlog
+from util import dlog
 import elo
 import os
 import argparse

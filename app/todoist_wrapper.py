@@ -1,14 +1,15 @@
 import todoist
 from datetime import datetime
-import base
+from base import *
 from util import dlog
 
-class Todoist():
-    def __init__(self):
+class Todoist(GTDSystem):
+    def __init__(self, username, password):
         self.api = todoist.TodoistAPI()
         self.user = None
         self.data = None
-        self.imgt = todoist.managers.items.ItemsManager(self.api)
+        self.imgr = todoist.managers.items.ItemsManager(self.api)
+        self.user = self.api.user.login(username, password)
 
     def _task_adapter(self, todoist_task):
         t = Task()
@@ -46,9 +47,13 @@ class Todoist():
     def commit(self):
         pass
 
-    def get(self):
+    def add_project(self, name):
+        self.api.projects.add(name)
 
+    def write(self, gtd):
+        self.api.commit()
+        pass
 
+    def read(self):
+        pass
 
-def get_app():
-    return None

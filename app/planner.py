@@ -1,5 +1,5 @@
 import re
-from base import dlog
+from util import dlog
 
 
 '''
