@@ -17,3 +17,9 @@ def same_date(utc_dt1, utc_dt2, timezone=None):
     #print(local_dt1.date(), local_dt2.date())
     return local_dt1.date() == local_dt2.date()
 
+def dlog(msg):
+    try:
+        #traceback.print_stack()
+        print(msg)
+    except UnicodeDecodeError:
+        print(msg.encode('utf-8'))

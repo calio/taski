@@ -23,9 +23,10 @@ class Project():
     def __repr__(self):
         return "[Project](" + self.name.encode('utf-8') + ")"
 
-def dlog(msg):
-    try:
-        #traceback.print_stack()
-        print(msg)
-    except UnicodeDecodeError:
-        print(msg.encode('utf-8'))
+    def add_task(self, name):
+        pass
+
+class GTDSystem():
+    def add_project(self, name):
+        pass
+

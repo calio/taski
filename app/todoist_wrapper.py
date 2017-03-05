@@ -1,6 +1,7 @@
 import todoist
 from datetime import datetime
-from base import dlog, Project, Task
+import base
+from util import dlog
 
 class Todoist():
     def __init__(self):
@@ -44,6 +45,9 @@ class Todoist():
         pass
     def commit(self):
         pass
+
+    def get(self):
+
 
 
 def get_app():
