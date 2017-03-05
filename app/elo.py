@@ -1,6 +1,9 @@
 import random
 import math
 
+
+orig_sorted = sorted
+
 random.seed()
 K = 16
 
@@ -24,8 +27,15 @@ def lose(ra, rb):
     ra = ra + K * (0 - expected(ra, rb))
     return ra
 
+def natual_cmp(a, b):
+    if a < b:
+        return 1
+    elif a == b:
+        return 0
+    else:
+        return -1
 
-def match(player1, player2):
+def terminal_cmp(a, b):
     while True:
         try:
             r = input("Which one wins? (0: draw, 1: 1 wins, 2: 2 wins)\n1. %s\n2. %s\n[0/1/2]:" % (player1, player2))
@@ -33,23 +43,28 @@ def match(player1, player2):
         except (SyntaxError, NameError) as e:
             print(e)
             continue
-
-        if r == 0:
-            player1["score"] = draw(player1["score"], player2["score"])
-            player2["score"] = draw(player2["score"], player1["score"])
-            break
-        elif r == 1:
-            player1["score"] = win(player1["score"], player2["score"])
-            player2["score"] = lose(player2["score"], player1["score"])
-            break
-        elif r == 2:
-            player1["score"] = lose(player1["score"], player2["score"])
-            player2["score"] = win(player2["score"], player1["score"])
-            break
-        else:
+        if r not in [0, 1, 2]:
             print("Invalid answer: %s\n" % r)
+        if r == 1:
+            # return something that is smaller thatn 0
+            r = -r
+        return r
 
-def sort(items):
+
+def match(player1, player2, cmp=natual_cmp):
+    r = cmp(player1, player2)
+
+    if r == 0:
+        player1["score"] = draw(player1["score"], player2["score"])
+        player2["score"] = draw(player2["score"], player1["score"])
+    elif r < 0:
+        player1["score"] = win(player1["score"], player2["score"])
+        player2["score"] = lose(player2["score"], player1["score"])
+    elif r > 0:
+        player1["score"] = lose(player1["score"], player2["score"])
+        player2["score"] = win(player2["score"], player1["score"])
+
+def sort(items, cmp=terminal_cmp):
     length = len(items)
     n = length
     if n < 2:
@@ -65,10 +80,44 @@ def sort(items):
         player2 = random.choice(array)
         while player1 == player2:
             player2 = random.choice(array)
-        match(player1, player2)
+        match(player1, player2, cmp=cmp)
 
     array = sorted(array, key=lambda x: x["score"], reverse=True)
-    #print("elo sorted array: ", array)
+
+    res = []
+    for bucket in array:
+        res.append(bucket["item"])
+
+    return res
+
+def sorted(iterable, cmp=None, key=None, reverse=False, rounds=None):
+    global orig_sorted
+    if cmp == None:
+        cmp = natual_cmp
+
+    length = len(iterable)
+    n = length
+    if n < 2:
+        return iterable
+
+    if rounds is None:
+        rounds = n
+
+    array = []
+    for item in iterable:
+        bucket = { "score": 0, "item": item }
+        array.append(bucket)
+
+    for i in xrange(rounds):
+        player1 = random.choice(array)
+        player2 = random.choice(array)
+        while player1 == player2:
+            player2 = random.choice(array)
+        match(player1, player2, cmp=cmp)
+
+    print(array)
+    array = orig_sorted(array, key=lambda x: x["score"], reverse=reverse)
+    print(array)
 
     res = []
     for bucket in array:
