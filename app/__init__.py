@@ -1,5 +1,5 @@
 #coding: utf-8
-import todoist
+import todoist_wrapper
 from base import dlog
 import elo
 import os
@@ -33,7 +33,7 @@ def get_config(args):
 
 def get_app(cfg):
 
-    app = todoist.Todoist()
+    app = todoist_wrapper.Todoist()
     app.init(cfg)
 
     return app
@@ -48,7 +48,7 @@ def show_old_tasks(app, args, cfg):
             print delta, "days\t", t
 
 def show_completed_tasks(app, args, cfg):
-    tasks = app.get_completed_tasks2(since=args.since, until=args.until)
+    tasks = app.get_completed_tasks(since=args.since, until=args.until)
     tasks = sorted(tasks, key=lambda x: x.ts_done)
     for t in tasks:
         print t.ts_done, t
@@ -56,7 +56,7 @@ def show_completed_tasks(app, args, cfg):
 
 def show(app, args, cfg):
     if args.show_cmd == "api_token":
-        print app.user.api_token
+        print app.get_token()
     elif args.show_cmd == "stats":
         print app.get_stats()
     elif args.show_cmd == "config":
@@ -84,7 +84,7 @@ def rank(app, args, cfg):
 
         i = 0
         for t in p.tasks:
-            app.update_task(t, "item_order", i)
+            app.update_task(t, item_order=i)
             i += 1
         app.update()
 
@@ -117,8 +117,7 @@ def schedule(app, res, offset=0, tasks_per_day=10):
         #tp.schedule_for(t.id, j)
         day = seq / tasks_per_day
         minute = seq % tasks_per_day
-        app.update_task(task, "date_string",
-                        "{day} days at 22:{minute:02}".format(
+        app.update_task(task, date_string="{day} days at 22:{minute:02}".format(
                             day=day, minute=minute))
         #t: Pytodoist Task
         app.mark_as_planned(task)

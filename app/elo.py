@@ -38,7 +38,7 @@ def natual_cmp(a, b):
 def terminal_cmp(a, b):
     while True:
         try:
-            r = input("Which one wins? (0: draw, 1: 1 wins, 2: 2 wins)\n1. %s\n2. %s\n[0/1/2]:" % (player1, player2))
+            r = input("Which one wins? (0: draw, 1: 1 wins, 2: 2 wins)\n1. %s\n2. %s\n[0/1/2]:" % (a, b))
             r = int(r)
         except (SyntaxError, NameError) as e:
             print(e)
