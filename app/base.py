@@ -1,16 +1,14 @@
-#import traceback
 import json
-from json import JSONEncoder
 
 class Task():
-    def __init__(self, name, id=0, pid=0, done=False, ts_done=-1, ts_added=-1, meta_data=None):
+    def __init__(self, name, id=0, pid=0, done=False, ts_done=-1, ts_added=-1, meta={}):
         self.id = id
         self.name = name
         self.pid = pid
         self.done = done
         self.ts_done = ts_done
         self.ts_added = ts_added
-        self.meta_data = meta_data
+        self.meta = meta
 
     def __repr__(self):
         return "[Task](" + self.name.encode('utf-8') + ")"
@@ -18,13 +16,14 @@ class Task():
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
-class Project(JSONEncoder):
-    def __init__(self, name, id=0, priority=0, tasks=None):
+class Project():
+    def __init__(self, name, id=0, priority=0, tasks=None, meta={}):
         self.id = id
         self.name = name
         ## TODO get tasks from dict
         self.tasks = []
         self.priority = priority
+        self.meta = meta
 
     def __repr__(self):
         return "[Project](" + self.name.encode('utf-8') + ")"
@@ -37,12 +36,19 @@ class Project(JSONEncoder):
         self.tasks.append(t)
         return t
 
+    def get_tasks(self):
+        return self.tasks
+
     def delete(self):
         pass
 
 class GTDSystem():
     def __init__(self):
         self.projects = []
+        self.meta = {}
+        self.add = []
+        self.delete = []
+        self.update = []
 
     def __eq__(self, other):
         return self.projects == other.projects
@@ -52,7 +58,10 @@ class GTDSystem():
         self.projects.append(p)
         return p
 
-    def writeJSON(self):
+    def get_projects(self):
+        return self.projects()
+
+    def write_json(self):
         projects = []
         for p in self.projects:
             tasks = []
@@ -64,7 +73,7 @@ class GTDSystem():
 
         return json.dumps(projects)
 
-    def readJSON(self, json_str):
+    def read_json(self, json_str):
         data = json.loads(json_str)
 
         for p in data:
