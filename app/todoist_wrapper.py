@@ -28,10 +28,14 @@ class Todoist():
     def init(self, cfg):
         self.api = todoist.TodoistAPI()
         self.user = self.api.user.login(cfg["email"], cfg["password"])
+        err = self.user.get("error")
+        if err:
+            raise Exception(err)
+
         self.api.sync()
         self.planned_label = self.get_label("planned")
         if not self.planned_label:
-            self.planned_label = self.api.labels.label("planned")
+            self.planned_label = self.api.labels.add("planned")
         self.planned_label_id = self.planned_label['id']
 
     def get_token(self):
@@ -157,7 +161,7 @@ class Todoist():
         res = self.completed_tasks
         if not res:
             res = []
-            if not self.user['is_premium']:
+            if not self.user.get('is_premium'):
                 self.completed_tasks = res
                 return res
 
