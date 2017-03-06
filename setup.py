@@ -13,8 +13,9 @@ setup(
     long_description=open("README.txt").read(),
     scripts=['taski'],
     install_requires=[
-        "pytodoist",
+        "todoist-python",
         "pytz",
         "tzlocal",
+        "pyyaml",
     ],
 )
