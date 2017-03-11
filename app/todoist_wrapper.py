@@ -10,8 +10,10 @@ import math
 import re
 from datetime import datetime
 import todoist
-from base import dlog, Project, Task
+from base import Project, Task
 from util import same_date
+from util import dlog
+import logging as log
 
 
 TO_UPDATE = {}
@@ -35,8 +37,10 @@ class Todoist():
         self.api.sync()
         self.planned_label = self.get_label("planned")
         if not self.planned_label:
+            log.debug("Create new planned label")
             self.planned_label = self.api.labels.add("planned")
-        self.planned_label_id = self.planned_label['id']
+        self.planned_label_id = int(self.planned_label['id'])
+        log.debug("planned_label_id: %d", self.planned_label_id)
 
     def get_token(self):
         return self.user['token']
@@ -44,6 +48,9 @@ class Todoist():
     def get_label(self, name):
         self.labels = self.api.labels.all()
         for l in self.labels:
+            if not isinstance(l['id'], int):
+                # skip non-regular label object
+                continue
             if l['name'] == name:
                 return l
         return None
@@ -98,6 +105,7 @@ class Todoist():
             t = self.PyTaskAdapter(tt)
             #print(t)
             if already_planned:
+                log.debug("Already planned: %-20s", t)
                 self.already_planned.append(t)
 
             if pmap.get(tt['project_id']) is None:
@@ -121,18 +129,25 @@ class Todoist():
         for k, v in pmap.iteritems():
             projects.append(v)
 
+        log.debug("Number of projects: %d", len(projects))
+        log.debug("Number of tasks: %d", len(ttasks))
+        log.debug("Number of already planned tasks: %d", len(self.already_planned))
+
         return projects
 
     def clean_up(self):
+        log.debug("Number of tasks to clear: %d", len(self.already_planned))
         for t in self.already_planned:
             tt = t._data
             tt.update(date_string="")
-            if self.planned_label_id in tt.labels:
-                labels = tt.labels[:]
+            log.debug("Clear date_string: %-20s", t)
+            if self.planned_label_id in tt['labels']:
+                labels = tt['labels'][:]
                 labels.remove(self.planned_label_id)
                 tt.update(labels=labels)
+                log.debug("Clear label: %-20s", t)
 
-    def update(self, cleanup=False):
+    def update(self):
         self.api.commit()
 
 

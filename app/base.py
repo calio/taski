@@ -11,7 +11,10 @@ class Task():
         self.meta_data = None
 
     def __repr__(self):
-        return "[Task](" + self.name.encode('utf-8') + ")"
+        name = self.name
+        name = (name[:50] + '...') if len(name) > 50 else name
+        name = name.encode('utf-8')
+        return "[Task](" + name + ")"
 
 class Project():
     def __init__(self):
@@ -23,9 +26,3 @@ class Project():
     def __repr__(self):
         return "[Project](" + self.name.encode('utf-8') + ")"
 
-def dlog(msg):
-    try:
-        #traceback.print_stack()
-        print(msg)
-    except UnicodeDecodeError:
-        print(msg.encode('utf-8'))
