@@ -17,5 +17,6 @@ setup(
         "pytz",
         "tzlocal",
         "pyyaml",
+        "coloredlogs",
     ],
 )
