@@ -14,7 +14,7 @@ import coloredlogs
 import logging as log
 
 
-VERSION="0.1.12"
+VERSION="0.1.13"
 
 def get_config(args):
     try:
