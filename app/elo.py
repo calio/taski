@@ -1,5 +1,6 @@
 import random
 import math
+import util
 
 
 orig_sorted = sorted
@@ -36,9 +37,12 @@ def natual_cmp(a, b):
         return -1
 
 def terminal_cmp(a, b):
+    question = util.red('Which one wins? (0: draw, 1: 1 wins, 2: 2 wins)') + '\n1. %s\n2. %s\n[0/1/2]:'
     while True:
         try:
-            r = input("Which one wins? (0: draw, 1: 1 wins, 2: 2 wins)\n1. %s\n2. %s\n[0/1/2]:" % (a, b))
+            item1 = util.green(str(a))
+            item2 = util.cyan(str(b))
+            r = input(question % (item1, item2))
             r = int(r)
         except (SyntaxError, NameError) as e:
             print(e)
