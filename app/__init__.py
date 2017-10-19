@@ -120,7 +120,7 @@ def schedule(app, res, offset=0, tasks_per_day=10):
         #tp.schedule_for(t.id, j)
         day = seq / tasks_per_day
         minute = seq % tasks_per_day
-        date_string = "{day} days at 22:{minute:02}".format(day=day, minute=minute)
+        date_string = "in {day} days at 22:{minute:02}".format(day=day, minute=minute)
         app.update_task(task, date_string=date_string)
         log.info("Task planned at \"%s\". Task: %-20s", date_string, task)
         #t: Pytodoist Task
