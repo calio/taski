@@ -1,7 +1,7 @@
 release:
 	bumpversion  --current-version `git describe --abbrev=0 --tags` --tag --commit patch setup.py app/__init__.py
-	python setup.py register
-	python setup.py sdist upload
+	python setup.py bdist_wheel
+	twine upload dist/*
 	git push --tags
 
 test:
