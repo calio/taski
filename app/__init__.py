@@ -1,7 +1,6 @@
 #coding: utf-8
 from __future__ import print_function
 import todoist_wrapper
-from util import dlog
 import elo
 import os
 import argparse

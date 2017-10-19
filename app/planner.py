@@ -1,5 +1,4 @@
 import re
-from util import dlog
 
 
 '''
@@ -90,14 +89,12 @@ class PriorityPlanner():
 
                 r = choose_func(item)
                 if r:
-                    #dlog("plan item: %d" % item.id)
                     self.update_stats(item.id)
                     self.calc_actual()
                     n += 1
                     yield r
                     break
                 else:
-                    #dlog("item %d has nothing to plan: remove item from items" % item.id)
                     items.remove(item)
             else:
                 raise StopIteration()
