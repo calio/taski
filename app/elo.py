@@ -68,7 +68,7 @@ def match(player1, player2, cmp=natual_cmp):
         player1["score"] = lose(player1["score"], player2["score"])
         player2["score"] = win(player2["score"], player1["score"])
 
-def sort(items, cmp=terminal_cmp):
+def sort(items, cmp=terminal_cmp, rounds=None):
     length = len(items)
     n = length
     if n < 2:
@@ -79,14 +79,18 @@ def sort(items, cmp=terminal_cmp):
         bucket = { "score": 0, "item": item }
         array.append(bucket)
 
-    for i in range(n):
+    if rounds is None:
+        rounds = n
+
+    for i in range(rounds):
         player1 = random.choice(array)
         player2 = random.choice(array)
         while player1 == player2:
             player2 = random.choice(array)
         match(player1, player2, cmp=cmp)
 
-    array = sorted(array, key=lambda x: x["score"], reverse=True)
+    array = orig_sorted(array, key=lambda x: x["score"], reverse=True)
+    print(array)
 
     res = []
     for bucket in array:
@@ -119,9 +123,9 @@ def sorted(iterable, cmp=None, key=None, reverse=False, rounds=None):
             player2 = random.choice(array)
         match(player1, player2, cmp=cmp)
 
-    print(array)
+    #print(array)
     array = orig_sorted(array, key=lambda x: x["score"], reverse=reverse)
-    print(array)
+    #print(array)
 
     res = []
     for bucket in array:
