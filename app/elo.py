@@ -1,9 +1,11 @@
 import random
 import math
 import util
+import npyscreen
 
 
 orig_sorted = sorted
+bag = {}
 
 random.seed()
 K = 16
@@ -54,6 +56,34 @@ def terminal_cmp(a, b):
             r = -r
         return r
 
+def show_ui(*args):
+    global bag
+    a = bag["a"]["item"]
+    b = bag["b"]["item"]
+    F  = npyscreen.Form(name = "Welcome to ELO ranking",)
+    t  = F.add(npyscreen.TitleText, name = "Which one wins?")
+    ms = F.add(npyscreen.TitleSelectOne, max_height=4, value = [1,], name="Pick One",
+            values = [a, b, "Draw"], scroll_exit=False)
+    F.edit()
+    d = ms.get_selected_objects()
+    r = None
+    if d[0] == "Draw":
+        r = 0
+    elif d[0] == a:
+        r = -1
+    else:
+        r = 1
+
+    return r
+
+
+def tui_cmp(a, b):
+    global bag
+    bag = {"a": a, "b": b}
+    #print("a:%s, b:%s" % (a, b))
+    r = npyscreen.wrapper_basic(show_ui)
+    #print(r)
+    return r
 
 def match(player1, player2, cmp=natual_cmp):
     r = cmp(player1, player2)
@@ -88,6 +118,7 @@ def sort(items, cmp=terminal_cmp, rounds=None):
         while player1 == player2:
             player2 = random.choice(array)
         match(player1, player2, cmp=cmp)
+        #print(array)
 
     array = orig_sorted(array, key=lambda x: x["score"], reverse=True)
     print(array)

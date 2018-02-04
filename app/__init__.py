@@ -71,6 +71,7 @@ def show(app, args, cfg):
 
 def rank(app, args, cfg):
     projects = app.get_projects()
+    use_ui = args.tui
 
     for p in projects:
         if p.name in cfg["rank_skip_projects"]:
@@ -80,7 +81,10 @@ def rank(app, args, cfg):
             log.info("Skip project: " + p.name)
             continue
         print(p.name, "[", len(p.tasks), "]")
-        tasks = elo.sort(p.tasks)
+        if use_ui:
+            tasks = elo.sort(p.tasks, cmp=elo.tui_cmp)
+        else:
+            tasks = elo.sort(p.tasks)
         p.tasks = tasks
         #app.update_project(p)
 
@@ -221,6 +225,8 @@ def main():
     rank_parser = subparsers.add_parser('rank', help='rank tasks')
     rank_parser.add_argument('-p', '--project', help='project name',
                              type=str2unicode)
+    rank_parser.add_argument('-t', '--tui', help='Use terminal UI for ranking',
+                             default=False, action='store_true')
     rank_parser.set_defaults(func=rank)
 
     show_parser = subparsers.add_parser('show', help='show things')
