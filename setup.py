@@ -18,5 +18,6 @@ setup(
         "tzlocal",
         "pyyaml",
         "coloredlogs",
+        "npyscreen",
     ],
 )
