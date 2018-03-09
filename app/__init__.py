@@ -1,12 +1,12 @@
 #coding: utf-8
 from __future__ import print_function
-import todoist_wrapper
-import elo
+from . import todoist_wrapper
+from . import elo
 import os
 import argparse
 import sys
 from datetime import datetime
-from planner import PriorityPlanner
+from .planner import PriorityPlanner
 import time
 import yaml
 import coloredlogs

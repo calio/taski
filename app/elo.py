@@ -1,6 +1,6 @@
 import random
 import math
-import util
+from . import util
 import npyscreen
 
 

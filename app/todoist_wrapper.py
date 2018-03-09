@@ -10,9 +10,9 @@ import math
 import re
 from datetime import datetime
 import todoist
-from base import Project, Task
-from util import same_date
-from util import dlog
+from .base import Project, Task
+from .util import same_date
+from .util import dlog
 import logging as log
 
 
