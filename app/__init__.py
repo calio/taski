@@ -1,5 +1,5 @@
 #coding: utf-8
-from __future__ import print_function
+
 from . import todoist_wrapper
 from . import elo
 import os
@@ -143,7 +143,7 @@ def plan(app, args, cfg):
                 # larger than 3 days
                 break
             pid = t.pid
-            if stats.has_key(pid):
+            if pid in stats:
                 stats[pid] += 1
             else:
                 stats[pid] = 1
@@ -196,7 +196,7 @@ def check_positive_int(val):
     return ival
 
 def str2unicode(val):
-    return unicode(val, sys.getfilesystemencoding())
+    return str(val, sys.getfilesystemencoding())
 
 def test(app, args, cfg):
     print(args)
@@ -241,7 +241,7 @@ def main():
     version_parser = subparsers.add_parser('version', help='print version number')
     version_parser.set_defaults(quick_func=lambda args: sys.stdout.write(VERSION + "\n"))
 
-    test_parser = subparsers.add_parser('test', help=u"¯\_(ツ)_/¯")
+    test_parser = subparsers.add_parser('test', help="¯\_(ツ)_/¯")
     test_parser.set_defaults(func=test)
 
     args = parser.parse_args()

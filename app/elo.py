@@ -44,13 +44,13 @@ def terminal_cmp(a, b):
         try:
             item1 = util.green(str(a))
             item2 = util.cyan(str(b))
-            r = input(question % (item1, item2))
+            r = eval(input(question % (item1, item2)))
             r = int(r)
         except (SyntaxError, NameError) as e:
             print(e)
             continue
         if r not in [0, 1, 2]:
-            print("Invalid answer: %s\n" % r)
+            print(("Invalid answer: %s\n" % r))
         if r == 1:
             # return something that is smaller thatn 0
             r = -r
@@ -147,7 +147,7 @@ def sorted(iterable, cmp=None, key=None, reverse=False, rounds=None):
         bucket = { "score": 0, "item": item }
         array.append(bucket)
 
-    for i in xrange(rounds):
+    for i in range(rounds):
         player1 = random.choice(array)
         player2 = random.choice(array)
         while player1 == player2:

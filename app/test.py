@@ -1,7 +1,7 @@
 import unittest
 from todoist import FileCache
-from planner import PriorityPlanner
-from base import Project, Task
+from .planner import PriorityPlanner
+from .base import Project, Task
 
 class TestGTD(unittest.TestCase):
     def test_file_cache(self):

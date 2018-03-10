@@ -50,7 +50,7 @@ class PriorityPlanner():
 
     def update_stats(self, pid):
         stats = self.stats
-        if stats.has_key(pid):
+        if pid in stats:
             stats[pid] += 1
         else:
             stats[pid] = 1

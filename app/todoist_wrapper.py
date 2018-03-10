@@ -126,7 +126,7 @@ class Todoist():
                 p.tasks.append(t)
 
         projects = []
-        for k, v in pmap.iteritems():
+        for k, v in pmap.items():
             projects.append(v)
 
         log.debug("Number of projects: %d", len(projects))
@@ -190,9 +190,9 @@ class Todoist():
             self.completed_tasks = res
 
         if since:
-            res = filter(lambda x: x.ts_done > since, res)
+            res = [x for x in res if x.ts_done > since]
         if until:
-            res = filter(lambda x: x.ts_done < until, res)
+            res = [x for x in res if x.ts_done < until]
 
         return res
 
