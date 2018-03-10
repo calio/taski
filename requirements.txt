@@ -1,0 +1,12 @@
+certifi==2018.1.18
+chardet==3.0.4
+coloredlogs==9.0
+humanfriendly==4.8
+idna==2.6
+npyscreen==4.10.5
+pytz==2018.3
+PyYAML==3.12
+requests==2.18.4
+todoist-python==7.0.18
+tzlocal==1.5.1
+urllib3==1.22
