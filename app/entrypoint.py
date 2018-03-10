@@ -7,6 +7,10 @@ import app.taski as taski
 
 
 def main():
+    """
+    Parse arguments and dispatch to different functions to handle
+    different use cases
+    """
     args = arguments.parse()
     FORMAT = "%(asctime)-15s %(levelname)-6s %(message)s"
     os.environ['COLOREDLOGS_LOG_FORMAT'] = FORMAT
@@ -17,8 +21,7 @@ def main():
 
     if hasattr(args, "quick_func"):
         args.quick_func(args)
-
-    if hasattr(args, "func"):
+    elif hasattr(args, "func"):
         cfg = taski.get_config(args)
         app = taski.get_app(cfg)
         args.func(app, args, cfg)

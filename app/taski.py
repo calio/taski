@@ -7,6 +7,7 @@ import yaml
 import logging as log
 from datetime import datetime
 import coloredlogs
+from math import floor
 
 from app.planner import PriorityPlanner
 import app.todoist_wrapper as todoist_wrapper
@@ -31,12 +32,14 @@ def get_config(args):
     # timezone:  # https://pypi.python.org/pypi/tzlocal
     return cfg
 
+
 def get_app(cfg):
 
     app = todoist_wrapper.Todoist()
     app.init(cfg)
 
     return app
+
 
 def show_old_tasks(app, args, cfg):
     tasks = app.get_tasks()
@@ -46,6 +49,7 @@ def show_old_tasks(app, args, cfg):
         delta = (now - t.ts_added).days
         if delta > 180:
             print(delta, "days\t", t)
+
 
 def show_completed_tasks(app, args, cfg):
     tasks = app.get_completed_tasks(since=args.since, until=args.until)
@@ -84,7 +88,7 @@ def rank(app, args, cfg):
         else:
             tasks = elo.sort(p.tasks)
         p.tasks = tasks
-        #app.update_project(p)
+        # app.update_project(p)
 
         i = 0
         for t in p.tasks:
@@ -97,6 +101,7 @@ def rank(app, args, cfg):
 
     print("OK")
 
+
 def choose_func(planner_item):
     tasks = planner_item.item.tasks
     if len(tasks) > 0:
@@ -106,6 +111,7 @@ def choose_func(planner_item):
     else:
         return None
 
+
 def schedule(app, res, offset=0, tasks_per_day=10):
     """ offset is the position that we should start plan for today's taks. That
         means if today we've finished n tasks, we skip the first n finished
@@ -113,21 +119,23 @@ def schedule(app, res, offset=0, tasks_per_day=10):
     """
     if offset >= tasks_per_day:
         log.warn("offset too large: %d", offset)
-        offset = tasks_per_day # Good job! Award him/her with more tasks!
+        offset = tasks_per_day  # Good job! Award him/her with more tasks!
 
     j = offset
     for task in res:
         # schedule t for today
         seq = j
         #tp.schedule_for(t.id, j)
-        day = seq / tasks_per_day
+        day = int(floor(seq / tasks_per_day))
         minute = seq % tasks_per_day
-        date_string = "in {day} days at 22:{minute:02}".format(day=day, minute=minute)
+        date_string = "in {day} days at 22:{minute:02}".format(
+            day=day, minute=minute)
         app.update_task(task, date_string=date_string)
-        log.info("Task planned at \"%s\". Task: %-20s", date_string, task)
-        #t: Pytodoist Task
+        log.info("Task planned at \"%s\". Task: %-20s" % (date_string, task))
+        # t: Pytodoist Task
         app.mark_as_planned(task)
         j += 1
+
 
 def plan(app, args, cfg):
     def adjust_for_completed_tasks(stats):
@@ -174,7 +182,7 @@ def plan(app, args, cfg):
     log.debug("Plan result:")
     for item in res:
         log.debug("%s", item)
-    #planner.run(projects)
+    # planner.run(projects)
     schedule(app, res, offset=offset, tasks_per_day=args.daily_goal)
 
     app.clean_up()
@@ -186,12 +194,6 @@ def plan(app, args, cfg):
 
     print("OK")
 
-
-def str2unicode(val):
-    #return str(val, sys.getfilesystemencoding())
-    log.info("val type: " + str(type(val)))
-
-    return val
 
 def test(app, args, cfg):
     print(args)

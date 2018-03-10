@@ -14,7 +14,7 @@ class Task():
         name = self.name
         name = (name[:50] + '...') if len(name) > 50 else name
         name = name.encode('utf-8')
-        return "[Task](" + name + ")"
+        return "[Task](" + str(name) + ")"
 
 class Project():
     def __init__(self):

@@ -38,14 +38,14 @@ def lose(ra, rb):
 
 
 def natual_cmp(a, b):
-    sa = a["score"]
-    sb = b["score"]
-    if sa < sb:
-        return -1
-    elif sa == sb:
+    ia = a["item"]
+    ib = b["item"]
+    if ia < ib:
+        return 1
+    elif ia == ib:
         return 0
     else:
-        return 1
+        return -1
 
 
 def terminal_cmp(a, b):
@@ -64,7 +64,9 @@ def terminal_cmp(a, b):
             print(("Invalid answer: %s\n" % r))
         if r == 1:
             # return something that is smaller thatn 0
-            r = -r
+            r = -1
+        else:
+            r = 1
         return r
 
 
@@ -101,15 +103,12 @@ def tui_cmp(a, b):
 def match(player1, player2, cmp=natual_cmp):
     r = cmp(player1, player2)
 
-    # Draw
     if r == 0:
         player1["score"] = draw(player1["score"], player2["score"])
         player2["score"] = draw(player2["score"], player1["score"])
-    # planyer1 wins
     elif r < 0:
         player1["score"] = win(player1["score"], player2["score"])
         player2["score"] = lose(player2["score"], player1["score"])
-    # planyer2 wins
     elif r > 0:
         player1["score"] = lose(player1["score"], player2["score"])
         player2["score"] = win(player2["score"], player1["score"])
