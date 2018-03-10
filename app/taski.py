@@ -77,10 +77,10 @@ def rank(app, args, cfg):
 
     for p in projects:
         if p.name in cfg["rank_skip_projects"]:
-            log.info("Skip project: " + p.name)
+            log.debug("Skip project (Skipped due to config): " + p.name)
             continue
         if args.project is not None and p.name != args.project:
-            log.info("Skip project: " + p.name)
+            log.debug("Skip project (Name not match): " + p.name)
             continue
         print(p.name, "[", len(p.tasks), "]")
         if use_ui:

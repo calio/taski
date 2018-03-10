@@ -43,6 +43,8 @@ def parse(cmd=None):
     subparsers = parser.add_subparsers(help='available commands')
 
     plan_parser = subparsers.add_parser('plan', help='plan tasks')
+    plan_parser.add_argument('-v', '--verbose',
+                        help="enable debugging", action='store_true')
     plan_parser.add_argument('-l', '--limit',
                              help='limit number of tasks to plan',
                              type=check_positive_int, default=30)
@@ -52,6 +54,8 @@ def parse(cmd=None):
     plan_parser.set_defaults(func=taski.plan)
 
     rank_parser = subparsers.add_parser('rank', help='rank tasks')
+    rank_parser.add_argument('-v', '--verbose',
+                        help="enable debugging", action='store_true')
     rank_parser.add_argument('-p', '--project', help='project name',
                              type=str2unicode)
     rank_parser.add_argument('-t', '--tui', help='Use terminal UI for ranking',
