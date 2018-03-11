@@ -242,7 +242,7 @@ class Todoist():
         for p in projects:
             self.update_project(p)
 
-    def get_completed_tasks(self, since=None, until=None):
+    def get_completed_tasks(self, since=None, until=None, max=100):
         """
 
         :param since:  (Default value = None)
@@ -257,11 +257,21 @@ class Todoist():
                 self.completed_tasks = res
                 return res
 
-            completed = self.api.completed.get_all()
-            tasks = completed['items']
+            offset = 0
+            limit = 50
+            while True:
+                completed = self.api.completed.get_all(limit=limit, offset=offset)
+                tasks = completed['items']
+                log.debug("Get completed tasks: %d" % len(tasks))
 
-            for t in tasks:
-                res.append(self.PyTaskAdapter(t))
+                for t in tasks:
+                    res.append(self.PyTaskAdapter(t))
+
+                if len(tasks) < limit:
+                    break
+                if max is not None and len(res) >= max:
+                    break
+                offset += limit
 
             res = sorted(res, key=lambda x: x.ts_done, reverse=True)
             self.completed_tasks = res
@@ -331,7 +341,7 @@ class Todoist():
                 writer.writerow([task.id, task.name, task.pid, task.done,
                                  task.ts_done, task.ts_added])
             if include_completed:
-                ctasks = self.get_completed_tasks()
+                ctasks = self.get_completed_tasks(max=None)
                 log.debug("Number of completed tasks: %d" % len(ctasks))
                 for task in ctasks:
                     writer.writerow([task.id, task.name, task.pid, task.done,
