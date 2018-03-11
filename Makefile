@@ -6,9 +6,13 @@ release:
 	python setup.py bdist_wheel
 	twine upload dist/*
 	-rm dist/*
+	-rm build/*
 	git push --tags
 
 test:
 	@pytest
+
+clean:
+	-rm -r build dist app/*.pyc
 
 .PHONY: init release test
