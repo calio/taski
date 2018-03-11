@@ -35,8 +35,7 @@ def get_config(args):
 
 def get_app(cfg):
 
-    app = todoist_wrapper.Todoist()
-    app.init(cfg)
+    app = todoist_wrapper.Todoist(cfg["email"], cfg["password"])
 
     return app
 
@@ -100,6 +99,10 @@ def rank(app, args, cfg):
             app.update()
 
     print("OK")
+
+
+def dump(app, args, cfg):
+    app.to_csv()
 
 
 def choose_func(planner_item):

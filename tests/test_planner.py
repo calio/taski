@@ -1,6 +1,6 @@
 import pytest
 from app.planner import PriorityPlanner
-from app.base import Project, Task
+from app.todoist_wrapper import Project, Task
 
 def test_priority_planner():
     def choose_func(planner_item):

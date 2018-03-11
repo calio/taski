@@ -42,6 +42,7 @@ def parse(cmd=None):
 
     subparsers = parser.add_subparsers(help='available commands')
 
+
     plan_parser = subparsers.add_parser('plan', help='plan tasks')
     plan_parser.add_argument('-v', '--verbose',
                         help="enable debugging", action='store_true')
@@ -53,6 +54,7 @@ def parse(cmd=None):
                              type=check_positive_int, default=10)
     plan_parser.set_defaults(func=taski.plan)
 
+
     rank_parser = subparsers.add_parser('rank', help='rank tasks')
     rank_parser.add_argument('-v', '--verbose',
                         help="enable debugging", action='store_true')
@@ -61,6 +63,7 @@ def parse(cmd=None):
     rank_parser.add_argument('-t', '--tui', help='Use terminal UI for ranking',
                              default=False, action='store_true')
     rank_parser.set_defaults(func=taski.rank)
+
 
     show_parser = subparsers.add_parser('show', help='show things')
     show_parser.add_argument('show_cmd', help='show things',
@@ -73,10 +76,18 @@ def parse(cmd=None):
     show_parser.set_defaults(until=None)
     show_parser.set_defaults(func=taski.show)
 
+
+    dump_parser = subparsers.add_parser('dump', help='dump tasks to csv file: todoist.csv')
+    dump_parser.add_argument('-v', '--verbose',
+                        help="enable debugging", action='store_true')
+    dump_parser.set_defaults(func=taski.dump)
+
     version_parser = subparsers.add_parser(
         'version', help='print version number')
     version_parser.set_defaults(
         quick_func=lambda args: sys.stdout.write(app.VERSION + "\n"))
+
+
     test_parser = subparsers.add_parser('test', help="¯\_(ツ)_/¯")
     test_parser.set_defaults(func=taski.test)
 

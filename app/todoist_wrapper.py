@@ -1,35 +1,73 @@
 """ Todoist adapter """
 
-import pickle
-import os
-import time
-import glob
-import uuid
-import json
-import math
 import re
 from datetime import datetime
-import todoist
-from .base import Project, Task
-from .util import same_date
-from .util import dlog
 import logging as log
+import csv
+
+import todoist
+from app.util import same_date
 
 
 TO_UPDATE = {}
 
 
-class Todoist():
+class Task():
+    """A single task that has name and time stamps associated with it"""
+
     def __init__(self):
+        self.id = 0
+        self.name = ""
+        self.pid = 0
+        self.done = False
+        self.ts_done = -1
+        self.ts_added = -1
+        self.meta_data = None
+
+    def __repr__(self):
+        name = self.name
+        name = (name[:50] + '...') if len(name) > 50 else name
+        #name = name.encode('utf-8')
+        return "Task(\"" + name + "\")"
+
+
+class Project():
+    """A single project that has a name and prioroty associated with it"""
+
+    def __init__(self):
+        self.id = 0
+        self.name = ""
+        self.tasks = []
+        self.priority = 0
+
+    def __repr__(self):
+        name = self.name
+        name = (name[:50] + '...') if len(name) > 50 else name
+        return "Project(\"" + name + "\")"
+
+
+class Todoist():
+    """
+    An class wrapping around Todoist client. Provides multiple functionality
+    to read/write/update Todoist
+    """
+
+    def __init__(self, email, password):
+        """
+        Initialize Todoist object. This function needs to be called once before
+        use.
+        :param email: login email
+        :param password: login password
+
+        """
         self.user = None
         self.completed_tasks = None
         self.planned_label = None
         self.planned_label_id = None
         self.already_planned = []
 
-    def init(self, cfg):
         self.api = todoist.TodoistAPI()
-        self.user = self.api.user.login(cfg["email"], cfg["password"])
+        self.user = self.api.user.login(email, password)
         err = self.user.get("error")
         if err:
             raise Exception(err)
@@ -43,9 +81,15 @@ class Todoist():
         log.debug("planned_label_id: %d", self.planned_label_id)
 
     def get_token(self):
+        """Get Todoist access token"""
         return self.user['token']
 
     def get_label(self, name):
+        """
+        Get an label object by name
+        :param name: label name
+
+        """
         self.labels = self.api.labels.all()
         for l in self.labels:
             if not isinstance(l['id'], int):
@@ -56,6 +100,11 @@ class Todoist():
         return None
 
     def PyTaskAdapter(self, pytodoist_task):
+        """
+
+        :param pytodoist_task: 
+
+        """
         t = Task()
         tt = pytodoist_task
 
@@ -73,18 +122,22 @@ class Todoist():
         t._data = tt
 
         if completed_date is not None:
-            t.ts_done = datetime.strptime(tt['completed_date'], "%a %d %b %Y %H:%M:%S +0000")
+            t.ts_done = datetime.strptime(
+                tt['completed_date'], "%a %d %b %Y %H:%M:%S +0000")
             t.done = True
         else:
-            t.ts_added = datetime.strptime(tt['date_added'], "%a %d %b %Y %H:%M:%S +0000")
+            t.ts_added = datetime.strptime(
+                tt['date_added'], "%a %d %b %Y %H:%M:%S +0000")
 
         return t
 
     def _get_ttasks(self):
+        """ """
         self.ttasks = self.api.items.all()
         return self.ttasks
 
     def get_tasks(self):
+        """ """
         ttasks = self._get_ttasks()
         tasks = []
         for tt in ttasks:
@@ -92,8 +145,9 @@ class Todoist():
         return tasks
 
     def get_projects(self):
+        """Get all projects"""
         ttasks = self._get_ttasks()
-        ttasks = sorted(ttasks, key=lambda x:x['item_order'])
+        ttasks = sorted(ttasks, key=lambda x: x['item_order'])
 
         pmap = {}
         for tt in ttasks:
@@ -103,7 +157,7 @@ class Todoist():
             elif tt['date_string']:
                 continue
             t = self.PyTaskAdapter(tt)
-            #print(t)
+            # print(t)
             if already_planned:
                 log.debug("Already planned: %-20s", t)
                 self.already_planned.append(t)
@@ -126,16 +180,18 @@ class Todoist():
                 p.tasks.append(t)
 
         projects = []
-        for k, v in pmap.items():
+        for _, v in pmap.items():
             projects.append(v)
 
         log.debug("Number of projects: %d", len(projects))
         log.debug("Number of tasks: %d", len(ttasks))
-        log.debug("Number of already planned tasks: %d", len(self.already_planned))
+        log.debug("Number of already planned tasks: %d",
+                  len(self.already_planned))
 
         return projects
 
     def clean_up(self):
+        """ """
         log.debug("Number of tasks to clear: %d", len(self.already_planned))
         for t in self.already_planned:
             tt = t._data
@@ -148,17 +204,27 @@ class Todoist():
                 log.debug("Clear label: %-20s", t)
 
     def update(self):
+        """Commit updates to Todoist."""
         self.api.commit()
 
-
     def update_task(self, t, **kargs):
+        """
+
+        :param t: 
+        :param **kargs: 
+
+        """
         tt = t._data
         tt.update(**kargs)
 
     def update_project(self, project):
+        """
+
+        :param project: 
+
+        """
         p = project
         i = 0
-        updates = []
         if len(p.tasks) < 1:
             return
         for t in p.tasks:
@@ -168,10 +234,21 @@ class Todoist():
             i += 1
 
     def update_projects(self, projects):
+        """
+
+        :param projects: 
+
+        """
         for p in projects:
             self.update_project(p)
 
     def get_completed_tasks(self, since=None, until=None):
+        """
+
+        :param since:  (Default value = None)
+        :param until:  (Default value = None)
+
+        """
         # This is a premium only feature
         res = self.completed_tasks
         if not res:
@@ -197,6 +274,11 @@ class Todoist():
         return res
 
     def num_tasks_completed_today(self, timezone):
+        """
+
+        :param timezone: 
+
+        """
         now = datetime.utcnow()
         n = 0
 
@@ -210,6 +292,11 @@ class Todoist():
         return n
 
     def mark_as_planned(self, task):
+        """
+
+        :param task: 
+
+        """
         tt = task._data
         if len(tt['labels']) == 0:
             tt.update(labels=[self.planned_label_id])
@@ -223,5 +310,29 @@ class Todoist():
             self.already_planned.remove(task)
 
     def get_stats(self):
+        """ """
         ttasks = self._get_ttasks()
         return "Total number of tasks: %d" % len(ttasks)
+
+    def to_csv(self, fname="todoist.csv", include_completed=True):
+        """
+        Dump all tasks into a csvfile
+        :param fname: name of the csv file to be written
+        """
+        with open(fname, "w") as csvfile:
+
+            writer = csv.writer(csvfile)
+            writer.writerow(["id", "name", "project id", "done",
+                             "timestamp_done", "timestamp_added"])
+
+            tasks = self.get_tasks()
+            log.debug("Number of not completed tasks: %d" % len(tasks))
+            for task in tasks:
+                writer.writerow([task.id, task.name, task.pid, task.done,
+                                 task.ts_done, task.ts_added])
+            if include_completed:
+                ctasks = self.get_completed_tasks()
+                log.debug("Number of completed tasks: %d" % len(ctasks))
+                for task in ctasks:
+                    writer.writerow([task.id, task.name, task.pid, task.done,
+                                     task.ts_done, task.ts_added])
