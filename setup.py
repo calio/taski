@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="taski",
-    version="0.1.17",
+    version="0.1.18",
     author="Jiale Zhi",
     author_email="vipcalio@gmail.com",
     packages=["app"],
