@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 import logging as log
 import csv
+import six
 
 import todoist
 from app.util import same_date
@@ -27,8 +28,9 @@ class Task():
     def __repr__(self):
         name = self.name
         name = (name[:50] + '...') if len(name) > 50 else name
-        #name = name.encode('utf-8')
-        return "Task(\"" + name + "\")"
+        if six.PY2:
+            name = name.encode('utf-8')
+        return "Task({})".format(name)
 
 
 class Project():

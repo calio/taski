@@ -1,5 +1,6 @@
-#coding: utf-8
+# coding: utf-8
 
+from __future__ import print_function
 import os
 import sys
 import time
@@ -128,13 +129,12 @@ def schedule(app, res, offset=0, tasks_per_day=10):
     for task in res:
         # schedule t for today
         seq = j
-        #tp.schedule_for(t.id, j)
+        # tp.schedule_for(t.id, j)
         day = int(floor(seq / tasks_per_day))
         minute = seq % tasks_per_day
-        date_string = "in {day} days at 22:{minute:02}".format(
-            day=day, minute=minute)
+        date_string = "in {day} days at 22:{minute:02}".format(day=day, minute=minute)
         app.update_task(task, date_string=date_string)
-        log.info("Task planned at \"%s\". Task: %-20s" % (date_string, task))
+        log.info('Task planned at "%s". Task: %-20s' % (date_string, task))
         # t: Pytodoist Task
         app.mark_as_planned(task)
         j += 1
@@ -160,8 +160,8 @@ def plan(app, args, cfg):
 
             if t.done:
                 done += 1
-        stats['total'] = total
-        stats['done'] = done
+        stats["total"] = total
+        stats["done"] = done
 
     projects = app.get_projects()
     project_blacklist = cfg["plan_skip_projects"]
@@ -200,5 +200,5 @@ def plan(app, args, cfg):
 
 def test(app, args, cfg):
     print(args)
-    #offset = app.num_tasks_completed_today(cfg["timezone"])
+    # offset = app.num_tasks_completed_today(cfg["timezone"])
     print(app.user.is_premium)

@@ -19,5 +19,6 @@ setup(
         "pyyaml",
         "coloredlogs",
         "npyscreen",
+        "six",
     ],
 )
