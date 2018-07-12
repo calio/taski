@@ -75,7 +75,7 @@ class PriorityPlanner():
     '''
     def plan(self, items, choose_func):
         if not self.internal_pre_process(items):
-            raise StopIteration()
+            return
         if self.preprocess:
             self.preprocess(self.stats)
             self.calc_actual()
@@ -97,7 +97,7 @@ class PriorityPlanner():
                 else:
                     items.remove(item)
             else:
-                raise StopIteration()
+                return
 
-        raise StopIteration()
+        return
 
