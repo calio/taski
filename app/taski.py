@@ -103,7 +103,7 @@ def rank(app, args, cfg):
 
 
 def dump(app, args, cfg):
-    app.to_csv()
+    app.to_csv(args.file, args.completed)
 
 
 def choose_func(planner_item):

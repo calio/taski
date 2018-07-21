@@ -1,5 +1,4 @@
 """ Todoist adapter """
-
 import re
 from datetime import datetime
 import logging as log
@@ -340,11 +339,21 @@ class Todoist():
             tasks = self.get_tasks()
             log.debug("Number of not completed tasks: %d" % len(tasks))
             for task in tasks:
-                writer.writerow([task.id, task.name, task.pid, task.done,
+                if six.PY2:
+                    name = task.name.encode('utf-8')
+                else:
+                    name = task.name
+                writer.writerow([task.id, name, task.pid, task.done,
                                  task.ts_done, task.ts_added])
             if include_completed:
                 ctasks = self.get_completed_tasks(max=None)
                 log.debug("Number of completed tasks: %d" % len(ctasks))
                 for task in ctasks:
-                    writer.writerow([task.id, task.name, task.pid, task.done,
+                    if six.PY2:
+                        name = task.name.encode('utf-8')
+                    else:
+                        name = task.name
+                    writer.writerow([task.id, name, task.pid, task.done,
                                      task.ts_done, task.ts_added])
+
+        print("saved output to {}".format(fname))

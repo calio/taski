@@ -78,6 +78,10 @@ def parse(cmd=None):
 
 
     dump_parser = subparsers.add_parser('dump', help='dump tasks to csv file: todoist.csv')
+    dump_parser.add_argument('-f', '--file', help="output file name",
+                             default="taski.csv")
+    dump_parser.add_argument('-c', '--completed', help="include completed tasks",
+                             action='store_true', default=False)
     dump_parser.add_argument('-v', '--verbose',
                         help="enable debugging", action='store_true')
     dump_parser.set_defaults(func=taski.dump)
